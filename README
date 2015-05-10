@@ -1,0 +1,18 @@
+Kuidas andmebaas üles seada ja rakendust kasutama hakata?
+
+1) Terminalis sisestada "su - postgres"
+2) Seejärel "createdb playtech". Kui on soov teist andmebaasi nime kasutada, siis src/settings.py failis muuta ära SQLALCHEMY_DATABASE_URI lõpus 'playtech'.
+3) Downloadida requirements.txt-st kõik vajalikud moodulid.
+4) Käivitada pythoni virtual environment projekti root kaustas.
+5) Projekti root kaustas avada terminal ja rakenduse käivitamiseks tuleb luua uus kasutaja. Seda kahjuks läbi brauseri teha ei saa.
+   Kasutaja saab luua käsuga "python manage.py create_user"
+6) Rakenduse saab käivitada käsuga "python wsgi.py"(localhost:5000)
+7) Sisse logida loodud kasutajaga.
+8) Uusi õppeaineid ei saa kahjuks lisada läbi brauseri. Selleks tuleb terminalis käivitada "python manage.py shell".
+9) Kõigepealt tuleb importida vajalikud modelid. "from src.models import*". Seejärel saab luua uued kursused ja õpetajad:
+   db.session.add(Course(name="Programmeerimine", code="MTAT 1.204", capacity=120))
+   db.session.add(Course(name="Tõenäosusteooria ja statistika", code="MTAT 1.104", capacity=215))
+   db.session.add(Course(name="Elektroonika", code="LOTE 1.307", capacity=60))
+   db.session.add(Teacher(first_name="Marju", last_name="Terane"))
+10) Andmete salvestamiseks "db.session.commit()". Rollbackiks "db.session.rollback".
+11) Õpetajate ühendamiseks ainetega saab kas kasutada shelli või brauserit, kursuste tabelist funktsioonide alt.

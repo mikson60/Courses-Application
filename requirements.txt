@@ -1,0 +1,14 @@
+Flask
+Flask-SQLAlchemy
+Flask-Script
+Flask-Mail
+
+Flask-Assets
+cssmin
+jsmin
+
+werkzeug
+blinker
+itsdangerous
+psycopg2
+sqlalchemy
