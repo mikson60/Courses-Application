@@ -1,0 +1,21 @@
+{% extends "layouts/main_layout.html" %}
+
+{% block subtitle %}
+{{ super() }}
+Main Courses Database
+{% endblock %}
+
+{% block body %}
+  <div class="container">
+    <div style="col-xs-offset-0">
+      <h1>Playtech Task</h1>
+      {% if current_user.is_authenticated()==False %}
+      <a href="/login"><button class="btn btn-primary">Login</button></a>
+      {% endif %}
+      {% if current_user.is_authenticated() %}
+        <a href="/administration"><button class="btn btn-primary">Administration</button></a>
+        <a href="/logout"><button class="btn btn-danger">Logout</button></a>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

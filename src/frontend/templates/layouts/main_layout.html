@@ -1,0 +1,33 @@
+<DOCTYPE html>
+
+<html>
+  <head>
+    <title>{% block page_title %}Playtech Trials{% endblock %}{% block subtitle %} - {% endblock %}</title>
+
+    {% assets filters="cssmin", output="gen/packed.css",
+    "lib/bootstrap/bootstrap.min.css",
+    "css/custom.css" -%}
+      <link rel="stylesheet" href="{{ ASSET_URL }}">
+    {%- endassets %}
+
+  </head>
+  <body>
+      <div style="min-height:100%; position:relative;">
+        <div class="bg"></div>
+        <div class="container" style="padding:10px; padding-bottom:60px;">
+          {% block flash_messages %}
+            {% include "layouts/_messages.html" %}
+          {% endblock %}
+          {% block body %}
+            Body
+          {% endblock %}
+        </div>
+      </div>
+
+      {% assets filters="jsmin", output="gen/packed.js",
+      "lib/bootstrap/bootstrap.min.js" -%}
+      {% endassets %}
+
+  </body>
+
+</html>
