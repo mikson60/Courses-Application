@@ -1,0 +1,44 @@
+{% raw %}
+<div class="row">
+  <legend>Users</legend>
+</div>
+
+<div>
+  <table class="table table-condensed table-hover">
+    <thead>
+      <tr>
+        <td>ID</td>
+        <td>Email</td>
+        <td>Name</td>
+        <td>Roles</td>
+        <td>Actions</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="(user_id, user) in users">
+        <td>{{ user_id }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.first_name }}</td>
+        <td>
+          <button class="btn btn-primary btn-xs" ng-repeat="(role_id, role) in user.roles" ng-click="remRole(user_id, role_id)">
+            <span class="glyphicon glyphicon-remove"></span> {{ role }}
+          </button>
+        </td>
+        <td>
+          <div class="btn-group" dropdown is-open="status.isopen">
+            <button type="button" class="btn btn-sm btn-default dropdown-toggle" dropdown-toggle ng-disabled="disabled">
+              Add Role
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li ng-repeat="(role_id, role) in all_roles" ngIf="role_id not in user.roles">
+                <a href="javascript:;" ng-click="addRole(user_id, role_id)">{{ role }}</a>
+              </li>
+            </ul>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endraw %}

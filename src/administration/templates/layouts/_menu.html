@@ -1,0 +1,13 @@
+<ul class="nav nav-sidebar">
+  {% if "ADMIN" in current_user.roles %}
+  <li class="nav-header">Menu</li>
+  <li><a href="#/courses">Courses</a></li>
+  <li><a href="#/teachers">Teachers</a></li>
+  <li><a href="#/course_add" style="color:gray;">Add Course</a></li>
+  <li><a href="#/teacher_add" style="color:gray;">Add Teacher</a></li>
+
+
+  <li class="nav-header">Misc</li>
+  <li><a href="#/users">Users</a></li>
+  {% endif %}
+</ul>

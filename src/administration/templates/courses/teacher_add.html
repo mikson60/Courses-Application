@@ -1,0 +1,11 @@
+{% raw %}
+<div ng-controller="ExampleController">
+  <form novalidate class="simple-form">
+    First Name: <input type="text" ng-model="teacher.first_name" /><br />
+    Last Name: <input type="text" ng-model="teacher.last_name" /><br />
+    <input type="button" ng-click="reset()" value="Reset" />
+    <input type="submit" ng-click="update(course)" value="Save" />
+  </form>
+</div>
+{% endraw%}
+

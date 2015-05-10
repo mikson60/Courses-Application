@@ -1,0 +1,66 @@
+<DOCTYPE html>
+<html lang="en" ng-app="playAdmin">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Playtech Admin Interface</title>
+
+    {% assets filters = "cssmin", output  = "gen/packed.css",
+    "lib/bootstrap/bootstrap.min.css",
+    "lib/ng/ng-table.min.css",
+    "lib/ng/loading-bar.min.css"
+    %}
+    <link href="{{ ASSET_URL }}" rel="stylesheet">
+    {% endassets %}
+
+
+    <script type="text/javascript" src="/assets/lib/jquery/jquery.min.js"></script>
+    {#    <script type="text/javascript" src="/assets/lib/ng/angular.min.js"></script>#}
+    {# "lib/bootstrap/bootstrap.min.js", #}
+    {% assets filters = "jsmin", output  = "gen/packed.js",
+      "lib/ng/angular.min.js",
+      "lib/ng/ui-bootstrap-tpls-0.12.0.min.js",
+      "lib/ng/angular-route.min.js",
+      "lib/ng/angular-resource.min.js",
+      "lib/ng/ng-table.min.js",
+      "lib/ng/loading-bar.min.js",
+      "js/app.js",
+      "js/services.js",
+      "js/controllers.js"
+     %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    <style>body {font-family: Helvetica; font-size: 13px;}</style>
+  </head>
+  <body>
+    <div class="navbar navbar-inverse">
+      <div class="container-fluid">
+        {# FIXME <img class="logo_img" src="{{ url_for('static', filename='img/logo.png') }}" alt=/> #}
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Playtech Admin Interface</a>
+        </div>
+        <div class="nav-collapse">
+          <ul class="nav pull-right">
+            {% if current_user.is_authenticated() %}
+            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome, {{ current_user.email }} <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/logout"><button class="btn btn-danger">Logout</button></a></li>
+              </ul>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="col-xs-2">
+          {% include "layouts/_menu.html" %}
+        </div>
+        <div class="col-xs-10" ng-view>
+          {% block content %}{% endblock %}
+        </div>
+      </div>
+  </body>
+</html>
