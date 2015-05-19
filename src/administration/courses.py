@@ -46,33 +46,6 @@ def course_add():
 def teacher_add():
     return render_template("teacher_add.html")
 
-@route(bp, '/action')
-def action():
-    action = request.args.get("action", None)
-
-    if action is None:
-        print(action)
-        print("action is none")
-        return abort(404)
-
-    resp = {}
-    if action == "addTeacher":
-        t = Teacher.query.filter_by(id=request.args.get("teacher_id", None, type=int)).first_or_404()
-        c = Course.query.filter_by(id=request.args.get("course_id", None, type=int)).first_or_404()
-        if t not in c.teachers:
-            c.teachers.append(t)
-            db.session.commit()
-        resp["teacher"] = t.first_name
-    elif action == "remTeacher":
-        t = Teacher.query.filter_by(id=request.args.get("teacher_id", None, type=int)).first_or_404()
-        c = Course.query.filter_by(id=request.args.get("course_id", None, type=int)).first_or_404()
-        if t in c.teachers:
-            c.teachers.remove(t)
-            db.session.commit()
-    else:
-        return abort(404)
-
-    return jsonify(resp)
 
 
 class CourseListRes(restful.Resource):
@@ -116,6 +89,11 @@ class CourseRes(restful.Resource):
         p.add_argument("id", type=int, location="args")
         self.get_parser = p
 
+        p2 = reqparse.RequestParser()
+        p2.add_argument("course_id", type=int, required=True)
+        p2.add_argument("action", type=str, required=True)
+        p2.add_argument("teacher_id", type=int)
+        self.assign_teacher_parser = p2
 
     @roles_accepted("ADMIN")
     def get(self):
@@ -149,24 +127,32 @@ class CourseRes(restful.Resource):
 
     #####################
     @roles_accepted("ADMIN")
-    def add_teacher(self):
-        args = self.get_parser.parse_args()
-
-        course = Course.query.filter(Course.id==args["course_id"]).first_or_404
-        teacher = Teacher.query.filter(Teacher.id==args["teacher_id"]).first_or_404
-
-        course.teachers.append(teacher)
-        db.session.commit()
-
-        resp = {'status': 'OK'}
-        return jsonify(resp)
-    #####################
-
-    @roles_accepted("ADMIN")
     def post(self):
+        args = self.assign_teacher_parser.parse_args()
+        print(args)
 
-    	resp = {'status': 'OK'}
-    	return jsonify(resp)
+        act = args["action"]
+        resp = {}
+
+        if act == "assignTeacher":
+            course = Course.query.filter(Course.id==args["course_id"]).first_or_404()
+            teacher = Teacher.query.filter(Teacher.id==args["teacher_id"]).first_or_404()
+
+
+
+            if teacher not in course.teachers:
+                course.teachers.append(teacher)
+                db.session.commit()
+
+            resp["teacher"] = teacher.first_name
+
+        elif act == "removeTeacher":
+            course = Course.query.filter(Course.id==args["course_id"]).first_or_404()
+            teacher = Teacher.query.filter(Teacher.id==args["teacher_id"]).first_or_404()
+            if teacher in course.teachers:
+                course.teachers.remove(teacher)
+                db.session.commit()
+        return jsonify(resp)
 
 
 
@@ -223,34 +209,13 @@ class TeacherRes(restful.Resource):
 
 
 class CourseAddRes(restful.Resource):
-	def __init__(self):
-		p = reqparse.RequestParser()
-		p.add_argument("name", type=str, location="args")
-		p.add_argument("code", type=str, location="args")
-		p.add_argument("capacity", type=int, location="args")
-
-		self.get_parser = p
-
-	@roles_accepted("ADMIN")
-	def get(self):
-		return jsonify(resp)
-
-	@roles_accepted("ADMIN")
-	def post(self):
-		args = self.get_parser.parse_args()
-
-		course_name = args["name"]
-		course_code = args["code"]
-		course_capacity = args["capacity"]
-
-		return jsonify(resp)
-
-class TeacherAddRes(restful.Resource):
     def __init__(self):
-        p = reqparse.RequestParser()
-        p.add_argument("first_name", type=str, location="args")
-        p.add_argument("last_name", type=str, location="args")
-        self.get_parser = p
+       p = reqparse.RequestParser()
+       p.add_argument("course_name", type=str) #MIKS location='args' EEMALDAMINE TÖÖLE PANI ASJA?
+       p.add_argument("course_code", type=str)
+       p.add_argument("course_capacity", type=int)
+
+       self.post_parser = p
 
     @roles_accepted("ADMIN")
     def get(self):
@@ -258,12 +223,40 @@ class TeacherAddRes(restful.Resource):
 
     @roles_accepted("ADMIN")
     def post(self):
-        args = self.get_parser.parse_args()
+        args = self.post_parser.parse_args()
 
-        teacher_name = args["first_name"]
-        course_code = args["last_name"]
+        course_name = args["course_name"]
+        course_code = args["course_code"]
+        course_capacity = args["course_capacity"]
 
+        print(course_name, course_code, course_capacity)
+        if (course_name is not None) and (course_code is not None) and (course_capacity is not None):
+            db.session.add(Course(name=course_name, code=course_code, capacity=course_capacity))
+            db.session.commit()
+
+class TeacherAddRes(restful.Resource):
+    def __init__(self):
+       p = reqparse.RequestParser()
+       p.add_argument("t_first_name", type=str)
+       p.add_argument("t_last_name", type=str)
+
+       self.post_parser = p
+
+    @roles_accepted("ADMIN")
+    def get(self):
         return jsonify(resp)
+
+    @roles_accepted("ADMIN")
+    def post(self):
+        args = self.post_parser.parse_args()
+
+        t_first_name = args["t_first_name"]
+        t_last_name = args["t_last_name"]
+
+        print(t_first_name, t_last_name)
+        if (t_first_name is not None) and (t_last_name is not None):
+            db.session.add(Teacher(first_name=t_first_name, last_name=t_last_name))
+            db.session.commit()
 
 
 api.add_resource(CourseListRes, "course/list")

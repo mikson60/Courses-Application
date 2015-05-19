@@ -26,7 +26,6 @@ playControllers.controller('CoursesListCtrl',
                 getData: function($defer, params) {
                     CourseServ.list(params.url(), function(resp) {
                         params.total(resp.total);
-
                         $scope.data = resp.rows;
                         $scope.teachers = resp.teachers;
                         console.log($scope.data["26"]);
@@ -40,46 +39,25 @@ playControllers.controller('CoursesListCtrl',
             CourseServ.delete({id: course_id}, function(resp) {
                 console.log($scope.data);
                 delete $scope.data[course_id.toString()];
-                /*
-                for(var i=0; i < $scope.data.length; i++) {
-                    if ($scope.data[i].id == course_id) {
-                        $scope.data.splice(i, 1);
-                        break;
-                    }
-                }
-                */
             });
         };
 
         $scope.addTeacher = function(course, teacher) {
-        $http.get('/administration/courses/action', {
-                method: "GET",
-                params: {
-                    action:"addTeacher",
-                    course_id:course,
-                    teacher_id:teacher
-                    }
-                })
-            .success(function(resp) {
+            CourseServ.editTeacher({ course_id: course,
+                         teacher_id:teacher, action:"assignTeacher"
+                      }, function(resp) {
                 $scope.data[course].teachers[teacher] = resp.teacher;
             });
         };
 
-
         $scope.remTeacher = function(course, teacher) {
-        $http.get('/administration/courses/action', {
-                method: "GET",
-                params: {
-                    action:"remTeacher",
-                    course_id:course,
-                    teacher_id:teacher
-                    }
-                })
-            .success(function(resp) {
-                delete $scope.data[course].teachers[teacher];
-            });
+          CourseServ.editTeacher({ course_id: course,
+                       teacher_id:teacher, action:"removeTeacher"
+                    }, function(resp) {
+                    delete $scope.data[course].teachers[teacher];
+          });
     };
-        
+
     }]
 );
 
@@ -106,7 +84,7 @@ playControllers.controller('TeachersListCtrl',
                 getData: function($defer, params) {
                     TeacherServ.list(params.url(), function(resp) {
                         params.total(resp.total);
-                        $scope.data = resp.rows; 
+                        $scope.data = resp.rows;
                         console.log($scope.data[0])
                         $defer.resolve(resp.rows);
                     });
@@ -141,16 +119,32 @@ playControllers.controller('TeachersCtrl',
 playControllers.controller('CourseAddCtrl',
     ['$scope', '$routeParams', 'CourseAdd',
     function ($scope, $routeParams, CourseAdd) {
-        CourseAdd.get($routeParams, function(resp) {
-        });
+
+      $scope.submitCourse = function(name, code, capacity) {
+          console.log('Name is: '+name);
+          console.log('Code is: '+code);
+          console.log('Capacity is: '+parseInt(capacity));
+          CourseAdd.addCourse({ course_name: name,
+                       course_code: code, course_capacity: parseInt(capacity)
+                    }, function(resp) {
+          });
+      };
+
     }]
 );
 
 playControllers.controller('TeacherAddCtrl',
     ['$scope', '$routeParams', 'TeacherAdd',
     function ($scope, $routeParams, TeacherAdd) {
-        TeacherAdd.get($routeParams, function(resp) {
-        });
+
+      $scope.submitTeacher = function(first_name, last_name) {
+          console.log('First Name is: '+first_name);
+          console.log('Last name is: '+last_name);
+          TeacherAdd.addTeacher({ t_first_name: first_name,
+                       t_last_name: last_name}, function(resp) {
+          });
+      };
+
     }]
 );
 

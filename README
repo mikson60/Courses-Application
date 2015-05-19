@@ -16,3 +16,6 @@ Kuidas andmebaas üles seada ja rakendust kasutama hakata?
    db.session.add(Teacher(first_name="Marju", last_name="Terane"))
 10) Andmete salvestamiseks "db.session.commit()". Rollbackiks "db.session.rollback".
 11) Õpetajate ühendamiseks ainetega saab kas kasutada shelli või brauserit, kursuste tabelist funktsioonide alt.
+
+
+Kui rakenduse käivitamisel tekib probleeme, siis võtta ühendust mikson60@gmail.com või 5223326.

@@ -1,12 +1,33 @@
 {% raw %}
-<div ng-controller="ExampleController">
-  <form novalidate class="simple-form">
-    Name: <input type="text" ng-model="course.name" /><br />
-    Code: <input type="text" ng-model="course.code" /><br />
-    Capacity: <input type="text" ng-model="course.code" /><br />
-    <input type="button" ng-click="reset()" value="Reset" />
-    <input type="submit" ng-click="update(course)" value="Save" />
-  </form>
-</div>
-{% endraw%}
+	<form name="addCourseForm" novalidate role="form">
+      <div class="form-group">
+        <label for="name">Course Name </label>
+        <span class="label label-danger" data-ng-show="submitted && addCourseForm.name.$error.required">Required!</span>
+        <input type="text" name="name" data-ng-model="name" class="form-control" required />
+      </div>
 
+      <div class="form-group">
+        <label for="code">Course Code</label>
+        <span class="label label-danger" data-ng-show="submitted && addCourseForm.code.$error.required">Required!</span>
+        <input type="text" name="code" data-ng-model="code" class="form-control" required />
+      </div>
+
+      <div class="form-group">
+        <label for="capacity">Course Capacity</label>
+        <span class="label label-danger" data-ng-show="submitted && addCourseForm.capacity.$error.required">Please insert an integer!</span>
+        <input type="text" name="capacity" data-ng-model="capacity" class="form-control" />
+      </div>
+
+			<!--
+      <div class="form-group">
+        <label for="teacherList">Course Teachers</label>
+        <span class="label label-danger" data-ng-show="submitted && addCourseForm.teacherList.$error.required">Required!</span>
+        <select name="teacherList" data-ng-model="teacherList" data-ng-options="id as value for (id, value) in teacherListOptions" class="form-control" required>
+          <option value=""></option>
+        </select>
+      </div>
+		-->
+
+      <button data-ng-disabled="progress.active()" data-ng-click="submitCourse(name, code, capacity)" class="btn btn-default">Submit</button>
+    </form>
+{% endraw%}
